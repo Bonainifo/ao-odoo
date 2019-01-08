@@ -8,7 +8,7 @@
     "author": "Eficent Business and IT Consulting Services S.L.",
     "website": "http://www.eficent.com",
     "category": "Sales",
-    "depends": ["sale", "mrp"],
+    "depends": ["sale", "mrp", "sale_crm"],
     "data": [
         "security/ir.model.access.csv",
         "views/sale_view.xml",
