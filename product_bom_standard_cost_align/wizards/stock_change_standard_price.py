@@ -22,8 +22,8 @@ class StockChangeStandardPrice(models.TransientModel):
     def change_price(self):
         if self.env.context.get('bom_standard_cost', False):
             if self._context['active_model'] == 'product.template':
-                products = self.env['product.template'].browse(
-                    self._context['active_ids']).product_variant_ids
+                products = [p.product_variant_ids for p in self.env[
+                    'product.template'].browse(self._context['active_ids'])]
             else:
                 products = self.env['product.product'].browse(
                     self._context['active_ids'])
