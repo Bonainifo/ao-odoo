@@ -1,7 +1,8 @@
 # Copyright 2016 Eficent Business and IT Consulting Services S.L.
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, models
+from odoo import _, api, models
+from odoo.exceptions import ValidationError
 
 
 class StockChangeStandardPrice(models.TransientModel):
@@ -22,11 +23,14 @@ class StockChangeStandardPrice(models.TransientModel):
     def change_price(self):
         if self.env.context.get('bom_standard_cost', False):
             if self._context['active_model'] == 'product.template':
-                products = [p.product_variant_ids for p in self.env[
-                    'product.template'].browse(self._context['active_ids'])]
+                products = self.env['product.product'].search(
+                    [('product_tmpl_id', 'in', self._context['active_ids'])])
             else:
                 products = self.env['product.product'].browse(
                     self._context['active_ids'])
+            if len(products.mapped('categ_id')) > 1:
+                raise ValidationError(
+                    _("Mixing products of various categories"))
             for product in products:
                 if (product.valuation != 'real_time' or
                         product.cost_method == 'standard'):
